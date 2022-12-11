@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
 const REGISTER_URL = 'https://securitypassword.cyclic.app/register';
 
 const RegisterForm = () => {
@@ -18,7 +20,7 @@ const RegisterForm = () => {
     const [validName, setValidName] = useState(false);
     const [userFocus, setUserFocus] = useState(false);
 
-    const [email, setEmail] = useState('dem@gmail.com');
+    const [email, setEmail] = useState('');
     const [validEmail, setValidEmail] = useState(false);
     const [emailFocus, setEmailFocus] = useState(false);
 
@@ -45,6 +47,10 @@ const RegisterForm = () => {
         setValidPwd(PWD_REGEX.test(pwd));
         setValidMatch(pwd === matchPwd);
     }, [pwd, matchPwd])
+    
+    useEffect(() => {
+        setValidEmail(EMAIL_REGEX.test(email));
+    });
 
     useEffect(() => {
         setErrMsg('');
@@ -148,6 +154,42 @@ const RegisterForm = () => {
                                     Debe empezar con una letra.<br />
                                     Letras, números y guiones permitidos.
                                 </p>
+
+                                <label htmlFor="email">
+                                    E-Mail:
+                                    <FontAwesomeIcon
+                                        icon={faCheck}
+                                        className={validEmail ? "valid" : "hide"}
+                                    />
+                                    <FontAwesomeIcon
+                                        icon={faTimes}
+                                        className={
+                                        validEmail || !email
+                                            ? "hide"
+                                            : "invalid"
+                                        }
+                                    />
+                                </label>
+                                <input
+                                    type="text"
+                                    id="email"
+                                    autoComplete="off"
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={email}
+                                    required
+                                    aria-invalid={validEmail ? "false" : "true"}
+                                    aria-describedby="emailnote"
+                                    onFocus={() => setEmailFocus(true)}
+                                    onBlur={() => setEmailFocus(false)}
+                                />
+                                <p
+                                    id="emailnote"
+                                    className={
+                                        emailFocus && email && !validEmail
+                                            ? "instructions"
+                                            : "offscreen"
+                                    }
+                            ></p>
 
 
                                 <label htmlFor="password">
